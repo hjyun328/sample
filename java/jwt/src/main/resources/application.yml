@@ -1,0 +1,71 @@
+spring:
+  profiles:
+    active: local
+  mvc:
+    static-path-pattern: /public/**
+  resources:
+    static-locations: classpath:/public/
+    add-mappings: true
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/public/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML
+http:
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
+jwt:
+  token:
+    secret-key: hjyun-sample-jwt
+    expiration-ms: 60000
+    refresh-ms: 10000
+    prefix: Bearer
+    header: Authorization
+    roles: role
+
+---
+
+spring:
+  profiles: local
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      format-sql: true
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+---
+
+spring:
+  profiles: dev
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      format-sql: true
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+  datasource:
+    url: jdbc:mysql://XXX.XXX.XXX.XXX:3306/XXX?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username:
+    password:
+
+---
+
+spring:
+  profiles: prod
