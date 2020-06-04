@@ -1,10 +1,8 @@
-package hjyun.sample.jwt.component;
+package hjyun.sample.jwt.bean;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
-@Component
 public class UserPasswordEncoder implements PasswordEncoder {
 
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

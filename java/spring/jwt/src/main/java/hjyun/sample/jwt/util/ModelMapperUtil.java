@@ -1,10 +1,13 @@
 package hjyun.sample.jwt.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
 
-public class ModelMapperUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ModelMapperUtil {
 
   private static final ModelMapper modelMapper;
 
@@ -17,7 +20,7 @@ public class ModelMapperUtil {
   }
 
   private static ModelMapper initializeModelMapper() {
-    final ModelMapper modelMapper = new ModelMapper();
+    ModelMapper modelMapper = new ModelMapper();
 
     Configuration configuration = modelMapper.getConfiguration();
     configuration.setMatchingStrategy(MatchingStrategies.STRICT);

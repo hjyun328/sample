@@ -17,43 +17,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class ApiExceptionHandler {
 
   private ResponseEntity<ApiError> createResponse(ApiError apiError) {
-    final HttpHeaders headers = new HttpHeaders();
+    HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
     return new ResponseEntity<>(apiError, headers, apiError.getStatus());
-  }
-
-  @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<?> handleHttpMessageNotReadableException(
-      HttpMessageNotReadableException e) {
-    final Throwable cause = e.getCause();
-    if (cause instanceof InvalidFormatException) {
-      return createResponse(ApiError.of(
-          ApiErrorCode.COMMON_INVALID_BODY, (InvalidFormatException) cause));
-    }
-
-    return handleException(e);
-  }
-
-  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  public ResponseEntity<?> handleMethodArgumentTypeMismatchException(
-      MethodArgumentTypeMismatchException e) {
-    return createResponse(ApiError.of(
-        ApiErrorCode.COMMON_INVALID_PARAMETER, e));
-  }
-
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<?> handleMethodArgumentNotValidException(
-      MethodArgumentNotValidException e) {
-    return createResponse(ApiError.of(
-        ApiErrorCode.COMMON_INVALID_BODY, e.getBindingResult()));
-  }
-
-  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-  public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(
-      HttpRequestMethodNotSupportedException e) {
-    return createResponse(ApiError.of(
-        ApiErrorCode.COMMON_METHOD_NOT_ALLOWED));
   }
 
   @ExceptionHandler(BusinessException.class)
@@ -67,6 +34,39 @@ public class ApiExceptionHandler {
 
     return createResponse(ApiError.of(
         ApiErrorCode.COMMON_INTERNAL_SERVER_ERROR));
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<?> handleHttpMessageNotReadableException(
+      HttpMessageNotReadableException e) {
+    Throwable cause = e.getCause();
+    if (cause instanceof InvalidFormatException) {
+      return createResponse(ApiError.of(
+          ApiErrorCode.COMMON_INVALID_BODY, (InvalidFormatException) cause));
+    }
+
+    return handleException(e);
+  }
+
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(
+      HttpRequestMethodNotSupportedException e) {
+    return createResponse(ApiError.of(
+        ApiErrorCode.COMMON_METHOD_NOT_ALLOWED));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<?> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException e) {
+    return createResponse(ApiError.of(
+        ApiErrorCode.COMMON_INVALID_BODY, e.getBindingResult()));
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<?> handleMethodArgumentTypeMismatchException(
+      MethodArgumentTypeMismatchException e) {
+    return createResponse(ApiError.of(
+        ApiErrorCode.COMMON_INVALID_PARAMETER, e));
   }
 
 }

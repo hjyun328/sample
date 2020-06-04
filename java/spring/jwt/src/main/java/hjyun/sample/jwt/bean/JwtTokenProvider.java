@@ -1,16 +1,17 @@
-package hjyun.sample.jwt.component;
+package hjyun.sample.jwt.bean;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +19,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
+@Getter
 public class JwtTokenProvider {
 
   @Value("${jwt.token.secret-key}")
@@ -49,7 +50,7 @@ public class JwtTokenProvider {
   }
 
   public String create(UserDetails userDetails) {
-    final Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+    Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
 
     claims.put(roles,
         userDetails.getAuthorities()
@@ -57,7 +58,7 @@ public class JwtTokenProvider {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList()));
 
-    final Date now = new Date();
+    Date now = new Date();
 
     return Jwts.builder()
         .setClaims(claims)
@@ -85,29 +86,30 @@ public class JwtTokenProvider {
     );
   }
 
+  @Nullable
   public String resolve(HttpServletRequest request) {
-    final String bearerToken = request.getHeader(header);
-
-    if (bearerToken != null && bearerToken.startsWith(prefix)) {
-      return bearerToken.substring(prefix.length());
-    }
-
-    return null;
+    return resolve(request.getHeader(header));
   }
 
-  public boolean validate(String token) {
-    try {
-      if (StringUtils.isNotEmpty(token)) {
-        Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(token);
-        return true;
-      }
-    } catch (Exception e) {
-      log.debug("Expired or invalid JWT token", e);
+  @Nullable
+  public String resolve(String bearerToken) {
+    if (!StringUtils.startsWith(bearerToken, prefix)) {
+      return null;
     }
 
-    return false;
+    return bearerToken.substring(prefix.length());
+  }
+
+  public boolean validate(@Nullable String token) {
+    if (StringUtils.isEmpty(token)) {
+      return false;
+    }
+
+    Jwts.parser()
+        .setSigningKey(secretKey)
+        .parseClaimsJws(token);
+
+    return true;
   }
 
 }

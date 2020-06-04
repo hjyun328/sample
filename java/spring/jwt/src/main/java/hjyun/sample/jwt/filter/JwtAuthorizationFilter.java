@@ -1,6 +1,6 @@
 package hjyun.sample.jwt.filter;
 
-import hjyun.sample.jwt.component.JwtTokenProvider;
+import hjyun.sample.jwt.bean.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +21,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
                                 JwtTokenProvider jwtTokenProvider) {
     super(authenticationManager);
+
     this.jwtTokenProvider = jwtTokenProvider;
   }
 
@@ -28,11 +29,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   protected void doFilterInternal(HttpServletRequest request,
                                   HttpServletResponse response,
                                   FilterChain chain) throws IOException, ServletException {
-    final String token = jwtTokenProvider.resolve(request);
+    String token = jwtTokenProvider.resolve(request);
 
     if (jwtTokenProvider.validate(token)) {
-      final Claims claims = jwtTokenProvider.getClaims(token);
-      final UserDetails userDetails = jwtTokenProvider.getUserDetails(claims);
+      Claims claims = jwtTokenProvider.getClaims(token);
+      UserDetails userDetails = jwtTokenProvider.getUserDetails(claims);
 
       if (userDetails != null) {
         SecurityContextHolder.getContext().setAuthentication(

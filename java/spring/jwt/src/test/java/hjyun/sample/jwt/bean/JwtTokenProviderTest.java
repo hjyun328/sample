@@ -1,4 +1,4 @@
-package hjyun.sample.jwt.component;
+package hjyun.sample.jwt.bean;
 
 // TODO: do test
 public class JwtTokenProviderTest {

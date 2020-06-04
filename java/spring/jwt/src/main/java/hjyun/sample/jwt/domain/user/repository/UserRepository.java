@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
   /*
-  TODO: remove jpql. replaced by ExampleMatcher.
+  TODO: JPQL 제거. ExampleMatcher로 대체.
   @Query(
       "SELECT CASE WHEN COUNT(u) > 0 "
       + "THEN TRUE "

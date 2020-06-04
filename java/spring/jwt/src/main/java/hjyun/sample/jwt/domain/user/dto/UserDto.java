@@ -1,6 +1,5 @@
 package hjyun.sample.jwt.domain.user.dto;
 
-import hjyun.sample.jwt.domain.user.entity.RoleEntity;
 import hjyun.sample.jwt.domain.user.entity.UserEntity;
 import hjyun.sample.jwt.util.ModelMapperUtil;
 import lombok.AccessLevel;
@@ -11,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,13 +30,13 @@ public class UserDto {
     this.username = username;
     this.email = email;
     this.password = password;
-    this.password = newPassword;
+    this.newPassword = newPassword;
     this.roles = roles;
   }
 
   private Long id;
 
-  @Size(min = 4, max = 32)
+  @Size(min = SIZE_MIN_USERNAME, max = SIZE_MAX_USERNAME)
   @NotEmpty
   private String username;
 
@@ -44,34 +44,40 @@ public class UserDto {
   @NotEmpty
   private String email;
 
-  @Size(min = 8, max = 64)
+  @Size(min = SIZE_MIN_PASSWORD, max = SIZE_MAX_PASSWORD)
   @NotEmpty
   private String password;
 
-  @Size(min = 8, max = 64)
+  @Size(min = SIZE_MIN_PASSWORD, max = SIZE_MAX_PASSWORD)
+  @NotEmpty
   private String newPassword;
 
   private Collection<String> roles;
 
-  public void encodePassword(String encodedPassword) {
-    password = encodedPassword;
-  }
-
-  public void applyAdminRole() {
-    roles = List.of(RoleEntity.ROLE_ADMIN.name(), RoleEntity.ROLE_USER.name());
-  }
-
   public static UserDto of(UserEntity userEntity) {
-    final UserDto userDto = ModelMapperUtil.map(
+    UserDto userDto = ModelMapperUtil.map(
         userEntity, UserDto.class);
 
     userDto.password = null;
 
     userDto.roles = userEntity.getRoles()
-        .stream().map(RoleEntity::name)
+        .stream().map(Enum::name)
         .collect(Collectors.toList());
 
     return userDto;
   }
+
+  public static List<UserDto> of(List<UserEntity> userEntities) {
+    return userEntities.stream().collect(
+        ArrayList::new,
+        (userDtos, userEntity) -> userDtos.add(of(userEntity)),
+        List::addAll);
+  }
+
+  public static final int SIZE_MIN_USERNAME = 4;
+  public static final int SIZE_MAX_USERNAME = 32;
+
+  public static final int SIZE_MIN_PASSWORD = 8;
+  public static final int SIZE_MAX_PASSWORD = 64;
 
 }

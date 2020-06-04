@@ -1,9 +1,9 @@
 package hjyun.sample.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hjyun.sample.jwt.component.JwtTokenProvider;
-import hjyun.sample.jwt.exception.ApiError;
+import hjyun.sample.jwt.bean.JwtTokenProvider;
 import hjyun.sample.jwt.domain.user.dto.UserDto;
+import hjyun.sample.jwt.exception.ApiError;
 import hjyun.sample.jwt.exception.ApiErrorCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   public Authentication attemptAuthentication(HttpServletRequest request,
                                               HttpServletResponse response)
       throws AuthenticationException {
-    final UserDto userDto;
+    UserDto userDto;
 
     try {
       userDto = new ObjectMapper().readValue(request.getInputStream(), UserDto.class);
@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             AuthenticationException failed) throws IOException {
     ApiError.response(response,
-        ApiError.of(ApiErrorCode.COMMON_UNAUTHORIZED),
+        ApiError.of(ApiErrorCode.COMMON_INVALID_USERNAME_OR_PASSWORD),
         objectMapper);
   }
 

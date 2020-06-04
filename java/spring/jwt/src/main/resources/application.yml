@@ -19,7 +19,7 @@ http:
     force: true
 jwt:
   token:
-    secret-key: hjyun-sample-jwt
+    secret-key: arcus-admin-tool
     expiration-ms: 60000
     refresh-ms: 10000
     prefix: Bearer

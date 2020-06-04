@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-// TODO: more test
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -42,15 +41,15 @@ public class UserRepositoryTest {
   }
 
   @Test(expected = DataIntegrityViolationException.class)
-  public void save_passwordEmpty() {
-    userEntityBuilder.password(null);
+  public void save_emailEmpty() {
+    userEntityBuilder.email(null);
 
     userRepository.save(userEntityBuilder.build());
   }
 
   @Test(expected = DataIntegrityViolationException.class)
-  public void save_emailEmpty() {
-    userEntityBuilder.email(null);
+  public void save_passwordEmpty() {
+    userEntityBuilder.password(null);
 
     userRepository.save(userEntityBuilder.build());
   }

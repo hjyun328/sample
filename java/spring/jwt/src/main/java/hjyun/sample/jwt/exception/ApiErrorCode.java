@@ -5,60 +5,64 @@ import org.springframework.http.HttpStatus;
 
 public enum ApiErrorCode {
 
-  // FIXME: use message source
+  // FIXME: message source 사용
 
   COMMON_INTERNAL_SERVER_ERROR(
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      "COMMON001", "internal server error"),
+      "COMMON001", "internal server error",
+      HttpStatus.INTERNAL_SERVER_ERROR),
   COMMON_METHOD_NOT_ALLOWED(
-      HttpStatus.METHOD_NOT_ALLOWED,
-      "COMMON002", "method not allowed"),
+      "COMMON002", "method not allowed",
+      HttpStatus.METHOD_NOT_ALLOWED),
   COMMON_INVALID_BODY(
-      HttpStatus.BAD_REQUEST,
-      "COMMON003", "invalid body"),
+      "COMMON003", "invalid body",
+      HttpStatus.BAD_REQUEST),
+  COMMON_ACCESS_DENIED(
+      "COMMON004", "access denied",
+      HttpStatus.FORBIDDEN),
+  COMMON_INVALID_USERNAME_OR_PASSWORD(
+      "COMMON005", "invalid username or password",
+      HttpStatus.UNAUTHORIZED),
+  COMMON_INVALID_PARAMETER(
+      "COMMON006", "invalid parameter",
+      HttpStatus.BAD_REQUEST),
+
   COMMON_INVALID_TYPE(
       "must %s type"),
-  COMMON_ACCESS_DENIED(
-    HttpStatus.FORBIDDEN,
-      "COMMON004", "access denied"),
-  COMMON_UNAUTHORIZED(
-      HttpStatus.UNAUTHORIZED,
-      "COMMON005", "unauthorized"),
-  COMMON_INVALID_PARAMETER(
-      HttpStatus.BAD_REQUEST,
-      "COMMON006", "invalid parameter"),
 
   USER_NOT_FOUND(
-      HttpStatus.NOT_FOUND,
-      "USER001", "user is not found"),
+      "USER001", "user is not found",
+      HttpStatus.NOT_FOUND),
   USER_USERNAME_NOT_FOUND(
-      HttpStatus.NOT_FOUND,
-      "USER002", "username is not found"),
+      "USER002", "username is not found",
+      HttpStatus.NOT_FOUND),
   USER_EMAIL_NOT_FOUND(
-      HttpStatus.NOT_FOUND,
-      "USER003", "email is not found"),
+      "USER003", "email is not found",
+      HttpStatus.NOT_FOUND),
   USER_USERNAME_DUPLICATED(
-      HttpStatus.CONFLICT,
-      "USER004", "username is duplicated"),
+      "USER004", "username is duplicated",
+      HttpStatus.CONFLICT),
   USER_EMAIL_DUPLICATED(
-      HttpStatus.CONFLICT,
-      "USER005", "email is duplicated"),
+      "USER005", "email is duplicated",
+      HttpStatus.CONFLICT),
   USER_PASSWORD_MISMATCH(
-      HttpStatus.FORBIDDEN,
-      "USER006", "password is mismatch");
+      "USER006", "password is mismatch",
+      HttpStatus.FORBIDDEN),
+  NO_USER(
+      "USER007", "no user",
+      HttpStatus.NO_CONTENT);
 
-  private final HttpStatus status;
   private final String code;
   private final String message;
+  private final HttpStatus status;
 
   ApiErrorCode(String message) {
-    this(null, StringUtils.EMPTY, message);
+    this(StringUtils.EMPTY, message, null);
   }
 
-  ApiErrorCode(HttpStatus status, String code, String message) {
-    this.status = status;
+  ApiErrorCode(String code, String message, HttpStatus status) {
     this.code = code;
     this.message = message;
+    this.status = status;
   }
 
   public HttpStatus status() {

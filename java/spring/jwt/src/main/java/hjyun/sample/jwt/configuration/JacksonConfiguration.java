@@ -14,7 +14,7 @@ public class JacksonConfiguration {
 
   @Bean
   public ObjectMapper objectMapper() {
-    final Hibernate5Module hibernateModule = new Hibernate5Module();
+    Hibernate5Module hibernateModule = new Hibernate5Module();
 
     hibernateModule.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
 

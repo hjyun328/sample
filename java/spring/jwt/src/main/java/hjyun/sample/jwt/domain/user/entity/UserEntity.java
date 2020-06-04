@@ -18,8 +18,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -36,6 +38,8 @@ public class UserEntity {
     this.email = email;
     this.password = password;
     this.roles = roles;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    this.registered = dateFormat.format(new Date());
   }
 
   @Id
@@ -44,6 +48,9 @@ public class UserEntity {
 
   @Column(nullable = false, unique = true)
   private String username;
+
+  @Column(nullable = false)
+  private String registered;
 
   @Column(nullable = false, unique = true)
   private String email;
@@ -62,26 +69,28 @@ public class UserEntity {
   @Column(name = "role")
   private Collection<RoleEntity> roles;
 
-  public void updateUsername(String username) {
-    this.username = username;
-  }
-
   public void updateEmail(String email) {
     this.email = email;
   }
 
-  public void updatePassword(String password) {
-    this.password = password;
+  public void updatePassword(String encodedPassword) {
+    password = encodedPassword;
+  }
+
+  public void applyAdminRole() {
+    roles = List.of(RoleEntity.ROLE_ADMIN, RoleEntity.ROLE_USER);
   }
 
   public static UserEntity of(UserDto userDto) {
-    final UserEntity userEntity = ModelMapperUtil.map(
+    UserEntity userEntity = ModelMapperUtil.map(
         userDto, UserEntityBuilder.class).build();
 
+    /*
     userEntity.roles = userDto.getRoles()
         .stream()
-        .map(RoleEntity::valueOf) // FIXME: may IllegalArgumentException
+        .map(RoleEntity::valueOf) // FIXME: IllegalArgumentException 발생 가능성
         .collect(Collectors.toList());
+     */
 
     return userEntity;
   }
